@@ -59,6 +59,15 @@ map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', { desc = '跳转到定�
 -- Telescope
 map("n", "<leader>p", ":Telescope find_files<CR>", opt)
 map("n", "<leader>f", ":Telescope live_grep<CR>", opt)
+
+-- gitsigns
+map("n", "]h", "<cmd>Gitsigns next_hunk<CR>", opt)
+map("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", opt)
+map("n", "<leader>ghs", ":Gitsigns stage_hunk<CR>", opt)
+map("v", "<leader>ghs", ":Gitsigns stage_hunk<CR>", opt)
+map("n", "<leader>ghr", ":Gitsigns reset_hunk<CR>", opt)
+map("v", "<leader>ghr", ":Gitsigns reset_hunk<CR>", opt)
+map("n", "<leader>ghp", "<cmd>Gitsigns preview_hunk<CR>", opt)
 -- Telescope 列表中 插入模式快捷键
 pluginKeys.telescopeList = {
   i = {

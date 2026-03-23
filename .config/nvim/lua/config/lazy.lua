@@ -33,6 +33,8 @@ require("lazy").setup({
   "arkav/lualine-lsp-progress",
   -- telescope
   {"nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" }},
+  -- gitsigns
+  {"lewis6991/gitsigns.nvim", dependencies = "nvim-lua/plenary.nvim"},
 
   -- 代码部分
   -- Comment代码注释
