@@ -1,0 +1,59 @@
+# build smart_nvim docker env
+# 配置文件从git拉的， 插件本身是从本机拷贝到镜像内的
+
+#how to build: 
+# 1. cd ~/.local/share/
+# 2. docker build --platform=linux/amd64 --network host -f /Users/baijiaao/.config/nvim/dockerfile/Dockerfile_amd64 . 
+
+# 指定x86 因为我的编译环境是arm
+FROM amd64/ubuntu:22.04
+
+ENV http_proxy  http://127.0.0.1:8118
+ENV https_proxy http://127.0.0.1:8118
+
+RUN sed -i s/archive.ubuntu.com/mirrors.163.com/g /etc/apt/sources.list && \
+    sed -i s/security.ubuntu.com/mirrors.163.com/g /etc/apt/sources.list
+
+
+RUN apt-get update 
+
+RUN apt-get install -y --no-install-recommends\
+      wget \
+      git \
+      ca-certificates \
+      build-essential \
+      gcc
+
+#for telescope
+RUN apt-get install -y --no-install-recommends\
+      ripgrep \
+      fd-find \
+       && update-ca-certificates
+
+#for some lsp servers
+RUN apt-get install -y  --no-install-recommends\
+      npm
+
+#for clangd
+RUN apt-get install -y  --no-install-recommends\
+      bear
+
+#inctall nvim
+RUN wget --no-check-certificate https://github.com/neovim/neovim/releases/download/v0.10.2/nvim-linux64.tar.gz
+RUN tar -zxvf nvim-linux64.tar.gz
+RUN cd nvim-linux64 && cp -r ./* /usr/local/
+RUN echo "alias v='nvim'" >> ~/.bashrc
+
+#install nvim config
+RUN mkdir ~/.config && cd ~/.config/  \
+      && git clone https://github.com/Jiaao-Bai/smart_neovim_config.git \
+       && mv smart_neovim_config nvim \
+        && cd nvim \
+         && git checkout main
+
+ENV http_proxy= 
+ENV https_proxy=
+
+COPY nvim  /root/.local/share/nvim/
+
+
