@@ -70,3 +70,4 @@ cp .zshrc ~/.zshrc
 - This is a personal dotfiles repo - changes should respect the existing structure
 - Plugin versions are locked - updating plugins requires modifying `lazy-lock.json`
 - LSP configs use newer Neovim 0.11+ APIs (`vim.lsp.config()`, `vim.lsp.enable()`)
+- **所有 keymap 必须定义在 `lua/config/keymaps.lua`**，plugin config 文件只从该文件读取，不得自行定义快捷键
