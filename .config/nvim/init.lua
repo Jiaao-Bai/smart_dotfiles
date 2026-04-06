@@ -16,7 +16,5 @@ require("plugin_config.nvim-treesitter")
 require("plugin_config.gitsigns")
 
 -- -- lsp client配置
--- 必须在各 LSP server 配置之前加载，以注入补全能力
-require("lsp_client_config.capabilities")
 require("lsp_client_config.luals")
 require("lsp_client_config.clangd")
