@@ -49,4 +49,26 @@ require("lazy").setup({
   -- nvim内置lsp client对lsp server的官方版配置
   -- nvim-lspconfig is a "data only" repo, providing basic, default Nvim LSP client configurations
   { "neovim/nvim-lspconfig" },
+
+  -- 代码补全
+  {
+    "saghen/blink.cmp",
+    version = "*",
+    opts = {
+      -- 键位映射预设：
+      --   <C-Space> 手动触发补全
+      --   <C-n>/<C-p> 或 <Tab>/<S-Tab> 上下选择
+      --   <CR> 确认补全，<C-e> 关闭补全窗口
+      keymap = { preset = "default" },
+      appearance = {
+        nerd_font_variant = "mono",
+      },
+      sources = {
+        -- 补全来源：LSP语义补全、文件路径、当前缓冲区文本
+        default = { "lsp", "path", "buffer" },
+      },
+      -- 显示函数参数签名提示
+      signature = { enabled = true },
+    },
+  },
 })
