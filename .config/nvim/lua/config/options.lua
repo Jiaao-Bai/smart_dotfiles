@@ -85,8 +85,9 @@ vim.o.pumheight = 10
 vim.o.showtabline = 2
 -- 使用增强状态栏插件后不再需要 vim 的模式提示
 vim.o.showmode = false
--- 配置剪切板
-vim.opt.clipboard = "unnamedplus"
+-- 不自动同步系统剪贴板，避免切换模式时意外粘贴
+-- 手动粘贴系统剪贴板用 "+p，复制用 "+y（或 visual 模式下 <C-y>）
+-- iTerm2 的 Cmd+V 粘贴不受此影响，仍然正常工作
 -- disable netrw at the very start of your init.lua
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
