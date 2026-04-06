@@ -68,6 +68,21 @@ map("v", "<leader>ghs", ":Gitsigns stage_hunk<CR>", opt)
 map("n", "<leader>ghr", ":Gitsigns reset_hunk<CR>", opt)
 map("v", "<leader>ghr", ":Gitsigns reset_hunk<CR>", opt)
 map("n", "<leader>ghp", "<cmd>Gitsigns preview_hunk<CR>", opt)
+
+-- Comment.nvim
+--   gcc       行注释 toggle
+--   gbc       块注释 toggle
+--   gc<动作>  注释范围，如 gc3j 注释下面3行
+pluginKeys.comment = {
+  toggler = {
+    line  = "gcc",
+    block = "gbc",
+  },
+  opleader = {
+    line  = "gc",
+    block = "gb",
+  },
+}
 -- Telescope 列表中 插入模式快捷键
 pluginKeys.telescopeList = {
   i = {
