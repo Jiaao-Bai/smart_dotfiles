@@ -47,14 +47,13 @@ map("n", "<leader>bo", ":BufferLineCloseRight<CR>:BufferLineCloseLeft<CR>", opt)
 -- 关闭选中buffer
 map("n", "<leader>bp", ":BufferLinePickClose<CR>", opt)
 
--- "moll/vim-bbye" 关闭当前 buffer
-map("n", "<leader>q", ":Bdelete!<CR>", opt)
+-- 关闭当前 buffer，保持窗口不关（先跳到上一个 buffer，再删除刚才那个）
+map("n", "<leader>q", ":bp<bar>bdelete #<CR>", opt)
 
--- 跳转到定义
--- map('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', { desc = '跳转到声明' })
-map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', { desc = '跳转到定义' })
--- map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', { desc = '跳转到实现' })
--- map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', { desc = '查看引用列表' })
+-- LSP 快捷键由 Neovim 0.11+ 自动内置，无需手动配置：
+--   K        悬浮文档    gd  跳转定义    gD  跳转声明
+--   grn      重命名      gra 代码动作    grr 查看引用    gri 跳转实现
+--   ]d / [d  诊断跳转    <C-W>d 显示诊断详情
 
 -- Telescope
 map("n", "<leader>p", ":Telescope find_files<CR>", opt)
@@ -74,8 +73,6 @@ pluginKeys.telescopeList = {
     -- 上下移动
     ["<C-j>"] = "move_selection_next",
     ["<C-k>"] = "move_selection_previous",
-    ["<C-n>"] = "move_selection_next",
-    ["<C-p>"] = "move_selection_previous",
     -- 历史记录
     ["<Down>"] = "cycle_history_next",
     ["<Up>"] = "cycle_history_prev",
