@@ -26,8 +26,6 @@ require("lazy").setup({
     end,},
   -- bufferline
   {'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons'},
-  -- vim-bbye
-  {"moll/vim-bbye"},
   -- lualine
   {"nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" }},
   "arkav/lualine-lsp-progress",
@@ -56,11 +54,15 @@ require("lazy").setup({
     version = "*",
     config = function()
       require('blink.cmp').setup({
-        -- 键位映射预设：
+        -- 键位映射：基于 default 预设，禁用 Tab/S-Tab 以保留 insert 模式原生缩进
         --   <C-Space> 手动触发补全
-        --   <C-n>/<C-p> 或 <Tab>/<S-Tab> 上下选择
+        --   <C-n>/<C-p> 上下选择（nvim 原生补全键）
         --   <CR> 确认补全，<C-e> 关闭补全窗口
-        keymap = { preset = "default" },
+        keymap = {
+          preset = "default",
+          ['<Tab>'] = {},
+          ['<S-Tab>'] = {},
+        },
         appearance = {
           nerd_font_variant = "mono",
         },
