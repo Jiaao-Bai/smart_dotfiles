@@ -5,7 +5,7 @@ vim.lsp.config('clangd', {
     '--clang-tidy',               -- 启用静态检查
     '--header-insertion=never',   -- 不自动插入头文件（模板代码中容易误插）
     '--completion-style=detailed',-- 补全时显示详细类型信息
-    '--function-arg-placeholders',-- 补全函数时填充参数占位符
+    '--function-arg-placeholders=1',-- 补全函数时填充参数占位符
   },
   -- 显式声明支持 cuda 文件类型（.cu / .cuh）
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
