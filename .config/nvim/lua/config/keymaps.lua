@@ -42,7 +42,9 @@ map("n", "<S-Tab>", ":BufferLineCyclePrev<CR>", opt)
 map("n", "<Tab>", ":BufferLineCycleNext<CR>", opt)
 -- 关闭其他buffer
 map("n", "<leader>bo", ":BufferLineCloseRight<CR>:BufferLineCloseLeft<CR>", opt)
--- 关闭选中buffer
+-- 字母选择跳转 buffer
+map("n", "<leader>bb", ":BufferLinePick<CR>", opt)
+-- 字母选择关闭 buffer
 map("n", "<leader>bp", ":BufferLinePickClose<CR>", opt)
 
 -- 关闭当前 buffer，保持窗口不关（先跳到上一个 buffer，再删除刚才那个）
