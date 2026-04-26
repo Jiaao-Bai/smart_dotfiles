@@ -26,6 +26,11 @@ nvim_tree.setup({
     -- 隐藏 .文件
     dotfiles = false,
   },
+  -- 切换 buffer 时自动在树中展开并高亮当前文件
+  update_focused_file = {
+    enable = true,
+    update_root = false,
+  },
   -- 显示 git 状态图标
   git = {
     enable = true,
