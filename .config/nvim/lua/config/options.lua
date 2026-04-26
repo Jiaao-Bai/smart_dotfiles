@@ -98,14 +98,3 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 -- 默认不要折叠
 -- https://stackoverflow.com/questions/8316139/how-to-set-the-default-to-unfolded-when-you-open-a-file
 vim.opt.foldlevel = 99
-
--- 切换到其他 App 时自动退出 visual 模式，防止 iTerm2 的 focus 事件
--- 注入 escape 序列导致选区异常扩大（按 : 出现 .,.+N 的问题）
-vim.api.nvim_create_autocmd("FocusLost", {
-  callback = function()
-    local mode = vim.fn.mode()
-    if mode == "v" or mode == "V" or mode == "\22" then
-      vim.api.nvim_feedkeys(vim.keycode("<Esc>"), "n", false)
-    end
-  end,
-})
