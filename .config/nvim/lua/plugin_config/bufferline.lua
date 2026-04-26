@@ -6,9 +6,9 @@ end
 
 bufferline.setup({
   options = {
-    -- 关闭 Tab 的命令
-    close_command = "Bdelete! %d",
-    right_mouse_command = "Bdelete! %d",
+    -- 关闭 Tab 的命令（用内置 bdelete，不依赖 vim-bbye）
+    close_command = "bdelete! %d",
+    right_mouse_command = "bdelete! %d",
     -- 侧边栏配置
     -- 左侧让出 nvim-tree 的位置，显示文字 File Explorer
     offsets = {
