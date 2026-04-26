@@ -39,10 +39,6 @@ require("lazy").setup({
   {"numToStr/Comment.nvim"},
   -- treesitter代码高亮, 缩进，折叠等
   {"nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
-  -- treesitter textobjects：按函数/类跳转，无需编译环境
-  {"nvim-treesitter/nvim-treesitter-textobjects", dependencies = {"nvim-treesitter/nvim-treesitter"}},
-  -- 自动维护 ctags 文件，支持 gd / <C-]> 跳转定义（无需编译环境）
-  {"ludovicchabant/vim-gutentags"},
 
   -- lsp
   -- 包管理器 for lsp server, dap server, etc.

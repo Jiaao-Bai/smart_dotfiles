@@ -4,8 +4,6 @@ if not status then
   return
 end
 
-local km = require("config.keymaps")
-
 treesitter.setup({
   -- 安装 language parser
   -- :TSInstallInfo 命令查看支持的语言
@@ -32,22 +30,6 @@ treesitter.setup({
   -- indent = {
   --   enable = true,
   -- },
-  -- 结构化导航：按函数/类跳转，文本对象选择
-  textobjects = {
-    select = {
-      enable = true,
-      lookahead = true,
-      keymaps = km.tsTextobjects.select,
-    },
-    move = {
-      enable = true,
-      set_jumps = true,
-      goto_next_start     = km.tsTextobjects.move.goto_next_start,
-      goto_next_end       = km.tsTextobjects.move.goto_next_end,
-      goto_previous_start = km.tsTextobjects.move.goto_previous_start,
-      goto_previous_end   = km.tsTextobjects.move.goto_previous_end,
-    },
-  },
   -- p00f/nvim-ts-rainbow
   rainbow = {
     enable = true,

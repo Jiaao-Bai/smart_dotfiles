@@ -59,9 +59,6 @@ map("n", "<leader>q", ":bp<bar>bdelete #<CR>", opt)
 -- Telescope
 map("n", "<leader>p", ":Telescope find_files<CR>", opt)
 map("n", "<leader>f", ":Telescope live_grep<CR>", opt)
--- ctags 符号搜索（无需编译环境）
-map("n", "<leader>t", ":Telescope tags<CR>", opt)              -- 项目级符号
-map("n", "<leader>T", ":Telescope current_buffer_tags<CR>", opt)  -- 当前文件符号
 
 -- gitsigns
 map("n", "]h", "<cmd>Gitsigns next_hunk<CR>", opt)
@@ -86,24 +83,6 @@ pluginKeys.comment = {
     block = "gb",
   },
 }
--- treesitter-textobjects 结构化导航键（被 nvim-treesitter.lua 读取）
---   af/if  函数外层/内层   ac/ic  类外层/内层
---   ]f/[f  下/上一个函数   ]c/[c  下/上一个类
-pluginKeys.tsTextobjects = {
-  select = {
-    ["af"] = "@function.outer",
-    ["if"] = "@function.inner",
-    ["ac"] = "@class.outer",
-    ["ic"] = "@class.inner",
-  },
-  move = {
-    goto_next_start     = { ["]f"] = "@function.outer", ["]c"] = "@class.outer" },
-    goto_next_end       = { ["]F"] = "@function.outer", ["]C"] = "@class.outer" },
-    goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
-    goto_previous_end   = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
-  },
-}
-
 -- Telescope 列表中 插入模式快捷键
 pluginKeys.telescopeList = {
   i = {

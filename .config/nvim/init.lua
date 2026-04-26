@@ -14,7 +14,6 @@ require("plugin_config.telescope")
 require("plugin_config.comment")
 require("plugin_config.nvim-treesitter")
 require("plugin_config.gitsigns")
-require("plugin_config.gutentags")
 
 -- -- lsp client配置
 require("lsp_client_config.luals")
