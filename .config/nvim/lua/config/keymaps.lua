@@ -40,9 +40,6 @@ map("n", "<leader>m", ":NvimTreeToggle<CR>", opt)
 -- 左右Tab切换
 map("n", "<S-Tab>", ":BufferLineCyclePrev<CR>", opt)
 map("n", "<Tab>", ":BufferLineCycleNext<CR>", opt)
--- 关闭左/右侧buffer
-map("n", "<leader>bh", ":BufferLineCloseLeft<CR>", opt)
-map("n", "<leader>bl", ":BufferLineCloseRight<CR>", opt)
 -- 关闭其他buffer
 map("n", "<leader>bo", ":BufferLineCloseRight<CR>:BufferLineCloseLeft<CR>", opt)
 -- 关闭选中buffer
