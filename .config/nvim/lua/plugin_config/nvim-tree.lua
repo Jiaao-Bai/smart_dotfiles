@@ -5,13 +5,13 @@ if not status then
 end
 
 nvim_tree.setup({
-  -- 恢复 nvim-tree 内 <C-j>/<C-k> 为单步导航，避免与全局 5j/5k 冲突
+  -- 将 nvim-tree 默认的 <C-k>（文件信息）移到 K，与全局 5k 不冲突
   on_attach = function(bufnr)
     local api = require("nvim-tree.api")
     api.config.mappings.default_on_attach(bufnr)
     local opt = { buffer = bufnr, silent = true }
-    vim.keymap.set("n", "<C-j>", "j", opt)
-    vim.keymap.set("n", "<C-k>", "k", opt)
+    vim.keymap.del("n", "<C-k>", { buffer = bufnr })
+    vim.keymap.set("n", "K", api.node.show_info_popup, opt)
   end,
   sort = {
     sorter = "case_sensitive",
