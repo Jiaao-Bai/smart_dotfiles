@@ -17,4 +17,3 @@ require("plugin_config.gitsigns")
 
 -- -- lsp client配置
 require("lsp_client_config.luals")
-require("lsp_client_config.clangd")
