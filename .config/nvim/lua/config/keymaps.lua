@@ -50,15 +50,14 @@ map("n", "<leader>bp", ":BufferLinePickClose<CR>", opt)
 -- 关闭当前 buffer，保持窗口不关（先跳到上一个 buffer，再删除刚才那个）
 map("n", "<leader>q", ":bp<bar>bdelete #<CR>", opt)
 
--- ctags + ripgrep 跳转（全局兜底）
--- 有 LSP 附加时（如 .lua 文件），Neovim 自动设置 buffer-local 映射覆盖以下全局映射
-vim.keymap.set("n", "gd", function()
+-- ctags + ripgrep 跳转
+vim.keymap.set("n", "<C-]>", function()
   require("telescope.builtin").tags({ default_text = vim.fn.expand("<cword>") })
 end, { noremap = true, silent = true, desc = "跳转定义 (ctags)" })
 
-vim.keymap.set("n", "grr", function()
+vim.keymap.set("n", "<leader>*", function()
   require("telescope.builtin").grep_string()
-end, { noremap = true, silent = true, desc = "查看引用 (ripgrep)" })
+end, { noremap = true, silent = true, desc = "搜索引用 (ripgrep)" })
 
 -- LSP 快捷键由 Neovim 0.11+ 在 LspAttach 时自动设置为 buffer-local（优先级高于上方全局映射）：
 --   K        悬浮文档    gd  跳转定义    gD  跳转声明
