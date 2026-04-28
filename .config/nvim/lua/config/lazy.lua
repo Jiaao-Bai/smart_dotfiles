@@ -66,9 +66,23 @@ require("lazy").setup({
         appearance = {
           nerd_font_variant = "mono",
         },
+        completion = {
+          list = {
+            -- 弹出时自动选中第一项，<CR> 可直接确认
+            selection = { preselect = true, auto_insert = false },
+          },
+        },
         sources = {
-          -- 补全来源：LSP语义补全、文件路径、当前缓冲区文本
+          -- 补全来源：LSP语义补全、文件路径、所有已加载的 buffer
           default = { "lsp", "path", "buffer" },
+          providers = {
+            buffer = {
+              opts = {
+                -- 默认只搜当前 buffer，改为搜所有已加载的 buffer
+                get_bufnrs = vim.api.nvim_list_bufs,
+              },
+            },
+          },
         },
         -- 显示函数参数签名提示
         signature = { enabled = true },
