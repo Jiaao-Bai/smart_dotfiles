@@ -1,13 +1,29 @@
-# Git aliases
+# Git
 alias gs='git status'
-alias gr='git remote -v'
-alias gl='git log'
+alias ga='git add'
 alias gc='git commit'
+alias gp='git push'
+alias gpl='git pull'
+alias gd='git diff'
+alias gl='git log'
+alias gb='git branch'
+alias gco='git checkout'
+alias gr='git remote -v'
 
-# ls aliases
+# Docker
+alias dps='docker ps'
+alias dex='docker exec -it'
+alias drm='docker rm'
+alias dimg='docker images'
+
+# ls
 alias ll='ls -al'
 alias la='ls -A'
 alias l='ls -CF'
+
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
 
 # Editor
 alias v='nvim'
