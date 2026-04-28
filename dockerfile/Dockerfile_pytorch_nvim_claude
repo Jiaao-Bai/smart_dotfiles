@@ -26,13 +26,13 @@ RUN apt-get install -y --no-install-recommends\
       fd-find \
        && update-ca-certificates
 
+# for ctags navigation
+RUN apt-get install -y --no-install-recommends\
+      universal-ctags
+
 # for some lsp servers
 RUN apt-get install -y  --no-install-recommends\
       npm
-
-# for clangd
-RUN apt-get install -y  --no-install-recommends\
-      bear
 
 # for clipboard
 RUN apt-get install -y  --no-install-recommends\
@@ -49,6 +49,7 @@ RUN mkdir ~/.config && cd ~/.config/ \
        && cd smart_dotfiles \
         && mv .config/nvim ~/.config/ \
         && cp .zsh_aliases ~/.zsh_aliases \
+        && cp -r .ctags.d ~/.ctags.d \
         && rm -rf smart_dotfiles
 
 RUN echo "source ~/.zsh_aliases" >> ~/.bashrc
