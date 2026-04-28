@@ -49,6 +49,10 @@ require("lazy").setup({
   { "neovim/nvim-lspconfig" },
 
   -- 代码补全
+  -- blink.compat：让 nvim-cmp 的 source 能在 blink.cmp 中使用
+  { "saghen/blink.compat", version = "*" },
+  -- ctags 补全源（通过 blink.compat 接入）
+  { "quangnguyen30192/cmp-nvim-tags" },
   {
     "saghen/blink.cmp",
     version = "*",
@@ -73,14 +77,20 @@ require("lazy").setup({
           },
         },
         sources = {
-          -- 补全来源：LSP语义补全、文件路径、所有已加载的 buffer
-          default = { "lsp", "path", "buffer" },
+          -- 补全来源：LSP语义补全、文件路径、所有已加载的 buffer、ctags 索引
+          default = { "lsp", "path", "buffer", "tags" },
           providers = {
             buffer = {
               opts = {
                 -- 默认只搜当前 buffer，改为搜所有已加载的 buffer
                 get_bufnrs = vim.api.nvim_list_bufs,
               },
+            },
+            -- ctags 补全：读取项目根目录的 tags 文件，覆盖未打开的文件中的符号
+            -- 使用前需在项目根目录执行 ctags -R .
+            tags = {
+              name = "tags",
+              module = "blink.compat.source",
             },
           },
         },
