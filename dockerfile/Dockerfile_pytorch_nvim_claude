@@ -1,62 +1,73 @@
-# build smart_nvim docker env
-
-# how to build:
-# 1. run :Mason to install lsp servers (optional)
-# 2. run :TSInstall <language> to install parsers (optional)
-# 3. cp -r ~/.local/share/nvim .
-# finally run: docker build --platform=linux/amd64 --network host -f Dockerfile_pytorch_nvim .
+# ==============================================================================
+# smart_nvim + Claude Code 开发镜像
+# Base: NVIDIA PyTorch（含 CUDA、cuDNN、Python）
+#
+# nvim 插件加载方式：
+#   插件不在构建时安装，而是从宿主机预构建好后 COPY 进镜像，避免构建时网络依赖。
+#   插件目录位于 ~/.local/share/nvim/，包含：
+#     - lazy.nvim 管理的所有插件
+#     - Mason 安装的 LSP server（当前：lua-language-server）
+#     - treesitter 编译好的 parser
+#
+# 构建步骤：
+#   1. 在宿主机 nvim 中运行 :Lazy sync 安装所有插件
+#   2. 可选：:Mason 安装 LSP server，:TSInstall <language> 安装 treesitter parser
+#   3. cp -r ~/.local/share/nvim ./dockerfile/
+#   4. docker build --platform=linux/amd64 --network host \
+#        -f dockerfile/Dockerfile_pytorch_nvim_claude .
+# ==============================================================================
 
 FROM nvcr.io/nvidia/pytorch:25.12-py3
 
+# 切换 apt 源到国内镜像（163）
 RUN sed -i s/archive.ubuntu.com/mirrors.163.com/g /etc/apt/sources.list && \
     sed -i s/security.ubuntu.com/mirrors.163.com/g /etc/apt/sources.list
 
-RUN apt-get update
-
-RUN apt-get install -y --no-install-recommends\
+# 安装系统依赖（update 与 install 必须在同一 RUN，避免 Docker 缓存导致 stale index）
+#   - wget git ca-certificates build-essential: 基础构建工具
+#   - ripgrep fd-find: telescope live_grep / find_files 后端
+#   - universal-ctags: <C-]> 跳转定义（ctags + telescope 方案，替代 clangd）
+#   - xclip: nvim 系统剪贴板支持
+RUN apt-get update && apt-get install -y --no-install-recommends \
       wget \
       git \
       ca-certificates \
       build-essential \
-      gcc
-
-# for telescope
-RUN apt-get install -y --no-install-recommends\
       ripgrep \
       fd-find \
-       && update-ca-certificates
+      universal-ctags \
+      xclip \
+    && update-ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# for ctags navigation
-RUN apt-get install -y --no-install-recommends\
-      universal-ctags
+# 安装 Node.js 20（claude-code 依赖，nodesource 自带 npm，无需单独安装）
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 
-# for some lsp servers
-RUN apt-get install -y  --no-install-recommends\
-      npm
+# 安装 nvim v0.11.6
+RUN wget --no-check-certificate \
+      https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-linux-x86_64.tar.gz \
+    && tar -zxf nvim-linux-x86_64.tar.gz \
+    && cp -r nvim-linux-x86_64/* /usr/local/ \
+    && rm -rf nvim-linux-x86_64 nvim-linux-x86_64.tar.gz
 
-# for clipboard
-RUN apt-get install -y  --no-install-recommends\
-      xclip
+# 从 smart_dotfiles 安装：
+#   - nvim 配置（~/.config/nvim）
+#   - zsh aliases（~/.zsh_aliases）
+#   - ctags 语言映射（~/.ctags.d，声明 .cu/.cuh 使用 CUDA 解析器）
+RUN mkdir -p ~/.config \
+    && git clone https://github.com/Jiaao-Bai/smart_dotfiles.git /tmp/smart_dotfiles \
+    && mv /tmp/smart_dotfiles/.config/nvim ~/.config/ \
+    && cp /tmp/smart_dotfiles/.zsh_aliases ~/.zsh_aliases \
+    && cp -r /tmp/smart_dotfiles/.ctags.d ~/.ctags.d \
+    && rm -rf /tmp/smart_dotfiles
 
-# install nvim v0.11.6
-RUN wget --no-check-certificate https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-linux-x86_64.tar.gz
-RUN tar -zxvf nvim-linux-x86_64.tar.gz
-RUN cd nvim-linux-x86_64 && cp -r ./* /usr/local/
-
-# install nvim config & aliases
-RUN mkdir ~/.config && cd ~/.config/ \
-      && git clone https://github.com/Jiaao-Bai/smart_dotfiles.git \
-       && cd smart_dotfiles \
-        && mv .config/nvim ~/.config/ \
-        && cp .zsh_aliases ~/.zsh_aliases \
-        && cp -r .ctags.d ~/.ctags.d \
-        && rm -rf smart_dotfiles
-
+# 容器默认 shell 是 bash，把 zsh aliases source 进来
 RUN echo "source ~/.zsh_aliases" >> ~/.bashrc
 
-COPY nvim  /root/.local/share/nvim/
+# 注入预构建的 nvim 插件（宿主机构建步骤 3 中 cp 出来的目录）
+COPY nvim /root/.local/share/nvim/
 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs
-
+# 安装 Claude Code（使用 npmmirror 国内源）
 RUN npm install -g @anthropic-ai/claude-code --registry=https://registry.npmmirror.com
