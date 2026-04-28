@@ -1,74 +1,41 @@
 # smart_dotfiles
 
-个人开发环境配置。
+生存装备库（macOS）。
 
 ## 内容
 
 | 路径 | 用途 |
 |---|---|
 | `.config/nvim/` | Neovim 配置 |
-| `.zshrc` | zsh 配置 |
+| `.config/ghostty/` | Ghostty 终端配置 |
 | `.zsh_aliases` | shell 别名 |
 | `.ctags.d/` | universal-ctags 全局配置（CUDA 语言映射） |
-| `dockerfile/` | 开发容器镜像 |
+| `dockerfile/` | Linux 开发容器镜像 |
 
-## 安装
+---
 
-### Neovim
+## macOS 新机器
 
-```bash
-mkdir -p ~/.config
-cp -r .config/nvim ~/.config/
-```
-
-插件由 lazy.nvim 管理，首次启动自动安装。
-
-### zsh
+前置：手动安装 [Ghostty](https://ghostty.org)、[Neovim](https://github.com/neovim/neovim/releases)、[universal-ctags](https://formulae.brew.sh/formula/universal-ctags)。
 
 ```bash
-cp .zshrc ~/.zshrc
-cp .zsh_aliases ~/.zsh_aliases
-echo "source ~/.zsh_aliases" >> ~/.zshrc
+git clone https://github.com/Jiaao-Bai/smart_dotfiles.git
+cd smart_dotfiles
+./install.sh
 ```
 
-### ctags（C++/CUDA 项目跳转）
+`install.sh` 通过 symlink 链接配置文件，之后 `git pull` 即可同步更新。不会覆盖 `~/.zshrc`，只会在末尾追加一行 `source ~/.zsh_aliases`。
 
-安装 universal-ctags：
+打开 nvim，执行 `:Lazy sync` 安装插件。
+
+---
+
+## Docker 镜像（Linux 开发环境）
+
+插件在宿主机预构建后打入镜像，容器启动即用。
 
 ```bash
-# macOS
-brew install universal-ctags
-
-# Ubuntu
-apt install universal-ctags
-```
-
-复制语言配置：
-
-```bash
-cp -r .ctags.d ~/.ctags.d
-```
-
-在每个 C++/CUDA 项目根目录执行一次，生成索引：
-
-```bash
-ctags -R .
-echo "tags" >> .gitignore
-```
-
-### 终端
-
-使用 [Ghostty](https://ghostty.org)。在 `~/.config/ghostty/config` 中设置字号：
-
-```
-font-size = 17
-```
-
-## Docker
-
-```bash
-# 1. 在宿主机安装好插件
-nvim  # 进入后 :Lazy sync，可选 :Mason 和 :TSInstall
+# 1. 在宿主机安装好插件（:Lazy sync，可选 :Mason 和 :TSInstall）
 
 # 2. 导出插件目录
 cp -r ~/.local/share/nvim dockerfile/
@@ -77,3 +44,16 @@ cp -r ~/.local/share/nvim dockerfile/
 docker build --platform=linux/amd64 --network host \
   -f dockerfile/Dockerfile_pytorch_nvim_claude .
 ```
+
+---
+
+## ctags 索引（C++/CUDA 项目）
+
+在每个 C++/CUDA 项目根目录执行一次：
+
+```bash
+ctags -R .
+echo "tags" >> .gitignore
+```
+
+之后用 `<C-]>` 跳转定义，`<leader>*` 全文搜索引用。符号变化后重新执行即可。
