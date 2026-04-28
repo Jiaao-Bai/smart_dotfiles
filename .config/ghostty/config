@@ -3,3 +3,4 @@ font-family = Symbols Nerd Font Mono
 font-size = 19
 background-opacity = 0.85
 background-blur = true
+window-padding-y = 0
