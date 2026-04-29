@@ -66,6 +66,7 @@ require("lazy").setup({
           preset = "default",
           ['<Tab>'] = {},
           ['<S-Tab>'] = {},
+          ['<CR>'] = { 'accept', 'fallback' },
         },
         appearance = {
           nerd_font_variant = "mono",
