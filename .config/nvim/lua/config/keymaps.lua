@@ -94,9 +94,15 @@ pluginKeys.comment = {
 -- Telescope 列表中 插入模式快捷键
 pluginKeys.telescopeList = {
   i = {
-    -- 上下移动
-    ["<C-j>"] = "move_selection_next",
-    ["<C-k>"] = "move_selection_previous",
+    -- 上下移动5项，与 normal 模式 <C-j>/<C-k> 保持一致
+    ["<C-j>"] = function(prompt_bufnr)
+      local actions = require("telescope.actions")
+      for _ = 1, 5 do actions.move_selection_next(prompt_bufnr) end
+    end,
+    ["<C-k>"] = function(prompt_bufnr)
+      local actions = require("telescope.actions")
+      for _ = 1, 5 do actions.move_selection_previous(prompt_bufnr) end
+    end,
     -- 历史记录
     ["<Down>"] = "cycle_history_next",
     ["<Up>"] = "cycle_history_prev",
