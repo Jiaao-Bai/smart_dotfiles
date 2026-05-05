@@ -37,9 +37,9 @@ local pluginKeys = {}
 map("n", "<leader>m", ":NvimTreeToggle<CR>", opt)
 
 -- bufferline
--- 左右Tab切换
-map("n", "<S-Tab>", ":BufferLineCyclePrev<CR>", opt)
-map("n", "<Tab>", ":BufferLineCycleNext<CR>", opt)
+-- buffer 切换：用 ]b / [b，释放 <Tab> 给 <C-i>（跳转前进）
+map("n", "]b", ":BufferLineCycleNext<CR>", opt)
+map("n", "[b", ":BufferLineCyclePrev<CR>", opt)
 -- 关闭其他buffer
 map("n", "<leader>bo", ":BufferLineCloseRight<CR>:BufferLineCloseLeft<CR>", opt)
 -- 字母选择跳转 buffer
