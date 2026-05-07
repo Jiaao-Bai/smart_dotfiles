@@ -29,6 +29,3 @@ alias ...='cd ../..'
 alias v='nvim'
 
 alias icloud='cd ~/Library/Mobile\ Documents/com~apple~CloudDocs'
-
-# universal-ctags（Homebrew keg-only，不会自动 shadow 系统 ctags）
-alias ctags="$(brew --prefix universal-ctags 2>/dev/null)/bin/ctags"
