@@ -74,6 +74,9 @@ end, { noremap = true, silent = true, desc = "复制文件完整路径" })
 -- aerial 代码大纲
 map("n", "<leader>a", ":AerialToggle<CR>", opt)
 vim.keymap.set("n", "<leader>A", function()
+  -- telescope 扩展要求 aerial 已 attach 到当前 buffer；
+  -- open({focus=false}) 触发 attach 但不移动光标
+  require("aerial").open({ focus = false })
   require("telescope").extensions.aerial.aerial()
 end, { noremap = true, silent = true, desc = "Telescope 符号搜索 (aerial)" })
 
