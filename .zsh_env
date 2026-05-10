@@ -1,0 +1,19 @@
+# OpenClaw completion (macOS only)
+if [[ "$(uname)" == "Darwin" ]]; then
+    source "$HOME/.openclaw/completions/openclaw.zsh"
+    export OPENCLAW_PROXY_URL=http://{{PROXY_IP}}:{{PROXY_PORT}}
+fi
+
+# Proxy
+export http_proxy=http://{{PROXY_IP}}:{{PROXY_PORT}}
+export https_proxy=http://{{PROXY_IP}}:{{PROXY_PORT}}
+
+# Claude (DeepSeek)
+export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
+export ANTHROPIC_AUTH_TOKEN={{AUTH_TOKEN}}
+export ANTHROPIC_MODEL=deepseek-v4-pro[1m]
+export ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-v4-pro[1m]
+export ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-v4-pro[1m]
+export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash
+export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash
+export CLAUDE_CODE_EFFORT_LEVEL=max

@@ -39,5 +39,27 @@ if ! grep -q "source ~/.zsh_aliases" ~/.zshrc 2>/dev/null; then
   echo "added 'source ~/.zsh_aliases' to ~/.zshrc"
 fi
 
+# --- .zsh_env 交互式生成 ---
+ZSH_ENV="$HOME/.zsh_env"
+rm -f "$ZSH_ENV"
+
+echo
+read -p "Proxy IP [127.0.0.1]: " proxy_ip
+proxy_ip=${proxy_ip:-127.0.0.1}
+read -p "Proxy port [8118]: " proxy_port
+proxy_port=${proxy_port:-8118}
+read -p "ANTHROPIC_AUTH_TOKEN: " auth_token
+
+sed -e "s#{{PROXY_IP}}#$proxy_ip#g" \
+    -e "s#{{PROXY_PORT}}#$proxy_port#g" \
+    -e "s#{{AUTH_TOKEN}}#$auth_token#g" \
+    "$DOTFILES/.zsh_env" > "$ZSH_ENV"
+echo "generated ~/.zsh_env"
+
+if ! grep -q "source ~/.zsh_env" ~/.zshrc 2>/dev/null; then
+  echo "source ~/.zsh_env" >> ~/.zshrc
+  echo "added 'source ~/.zsh_env' to ~/.zshrc"
+fi
+
 echo
 echo "done. restart your shell to apply zsh changes."
