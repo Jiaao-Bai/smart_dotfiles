@@ -105,6 +105,7 @@ pluginKeys.comment = {
   },
 }
 -- Telescope 列表中 插入模式快捷键
+-- defaults.mappings 对所有 picker 生效，包括 aerial telescope 扩展
 pluginKeys.telescopeList = {
   i = {
     -- 上下移动5项，与 normal 模式 <C-j>/<C-k> 保持一致

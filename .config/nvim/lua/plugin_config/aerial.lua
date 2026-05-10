@@ -6,6 +6,11 @@ end
 
 aerial.setup({
   backends = { "treesitter", "lsp" },
+  -- 侧边栏 buffer-local 快捷键（与全局 <C-j>/<C-k>=5j/5k 保持一致）
+  keymaps = {
+    ["<C-j>"] = function() vim.cmd("normal! 5j") end,
+    ["<C-k>"] = function() vim.cmd("normal! 5k") end,
+  },
   -- 只显示有意义的符号，过滤掉变量/字段/参数
   filter_kind = {
     "Class", "Constructor", "Enum", "EnumMember",
