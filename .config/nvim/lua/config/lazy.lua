@@ -40,6 +40,9 @@ require("lazy").setup({
   -- treesitter代码高亮, 缩进，折叠等
   {"nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
 
+  -- aerial: 代码大纲（函数/类/namespace 层级视图）
+  { "stevearc/aerial.nvim", dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" } },
+
   -- lsp
   -- 包管理器 for lsp server, dap server, etc.
   { "mason-org/mason.nvim", opts = {} },

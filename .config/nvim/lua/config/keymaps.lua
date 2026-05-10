@@ -64,6 +64,19 @@ end, { noremap = true, silent = true, desc = "搜索引用 (ripgrep)" })
 --   grn      重命名      gra 代码动作    grr 查看引用    gri 跳转实现
 --   ]d / [d  诊断跳转    <C-W>d 显示诊断详情
 
+-- 复制当前文件完整路径到系统剪贴板（y=yank p=path）
+vim.keymap.set("n", "<leader>yp", function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg("+", path)
+  vim.notify(path)
+end, { noremap = true, silent = true, desc = "复制文件完整路径" })
+
+-- aerial 代码大纲
+map("n", "<leader>a", ":AerialToggle<CR>", opt)
+vim.keymap.set("n", "<leader>A", function()
+  require("telescope").extensions.aerial.aerial()
+end, { noremap = true, silent = true, desc = "Telescope 符号搜索 (aerial)" })
+
 -- Telescope
 map("n", "<leader>p", ":Telescope find_files<CR>", opt)
 map("n", "<leader>f", ":Telescope live_grep<CR>", opt)
