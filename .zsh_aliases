@@ -28,4 +28,10 @@ alias ...='cd ../..'
 # Editor
 alias v='nvim'
 
-alias icloud='cd ~/Library/Mobile\ Documents/com~apple~CloudDocs'
+if [[ "$(uname)" == "Darwin" ]]; then
+    alias icloud='cd ~/Library/Mobile\ Documents/com~apple~CloudDocs'
+elif [[ "$(uname)" == "Linux" ]]; then
+    if [ "$TERM" = "xterm-ghostty" ]; then
+        export TERM=xterm-256color
+    fi
+fi

@@ -5,19 +5,35 @@ set -e
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# ~/.config/* — 每个子目录单独 symlink，不整体替换 ~/.config
+# 安全链接：目标已是软链则覆盖，是真实目录/文件则先备份再链接
+link_safe() {
+  local src="$1"
+  local dst="$2"
+  if [ -L "$dst" ]; then
+    ln -sfn "$src" "$dst" && echo "linked $dst"
+  elif [ -e "$dst" ]; then
+    local bak="${dst}.bak.$(date +%Y%m%d%H%M%S)"
+    mv "$dst" "$bak"
+    echo "backed up $dst → $bak"
+    ln -sfn "$src" "$dst" && echo "linked $dst"
+  else
+    ln -sfn "$src" "$dst" && echo "linked $dst"
+  fi
+}
+
 mkdir -p ~/.config
+
+# ~/.config/* — 每个子目录单独 symlink，不整体替换 ~/.config
 for dir in "$DOTFILES"/.config/*/; do
   name=$(basename "$dir")
-  ln -sfn "$dir" ~/.config/"$name"
-  echo "linked ~/.config/$name"
+  link_safe "$dir" ~/.config/"$name"
 done
 
 # ctags 语言映射
-ln -sfn "$DOTFILES/.ctags.d" ~/.ctags.d && echo "linked ~/.ctags.d"
+link_safe "$DOTFILES/.ctags.d" ~/.ctags.d
 
-# zsh aliases — symlink 文件，然后往现有 .zshrc 追加 source 行（幂等）
-ln -sf "$DOTFILES/.zsh_aliases" ~/.zsh_aliases && echo "linked ~/.zsh_aliases"
+# zsh aliases
+link_safe "$DOTFILES/.zsh_aliases" ~/.zsh_aliases
 if ! grep -q "source ~/.zsh_aliases" ~/.zshrc 2>/dev/null; then
   echo "source ~/.zsh_aliases" >> ~/.zshrc
   echo "added 'source ~/.zsh_aliases' to ~/.zshrc"
