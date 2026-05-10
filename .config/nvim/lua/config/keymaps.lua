@@ -74,14 +74,10 @@ end, { noremap = true, silent = true, desc = "复制文件完整路径" })
 -- aerial 代码大纲
 map("n", "<leader>a", ":AerialToggle<CR>", opt)
 vim.keymap.set("n", "<leader>A", function()
-  -- 若报 "no supported backend"，说明当前文件的 treesitter parser 未安装
-  -- 运行 :Lazy sync 安装 aerial，再运行 :TSUpdate 安装所有 parser
-  local ok, err = pcall(function()
-    require("telescope").extensions.aerial.aerial()
-  end)
-  if not ok then
-    vim.notify("Aerial: " .. err .. "\n提示：运行 :Lazy sync 后再运行 :TSUpdate", vim.log.levels.WARN)
-  end
+  -- telescope 扩展要求 aerial 已 attach 到当前 buffer；
+  -- open({focus=false}) 触发 attach 但不移动光标
+  require("aerial").open({ focus = false })
+  require("telescope").extensions.aerial.aerial()
 end, { noremap = true, silent = true, desc = "Telescope 符号搜索 (aerial)" })
 
 -- Telescope
