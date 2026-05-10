@@ -8,29 +8,30 @@
 #   docker build --platform=linux/amd64 --network host \
 #     -f dockerfile/Dockerfile_pytorch_nvim_claude .
 #
-# 构建（带代理，将 http_proxy/https_proxy 替换为实际代理地址）：
+# 构建（带代理 + Claude 配置）：
 #   docker build --platform=linux/amd64 --network host \
-#     --build-arg HTTP_PROXY=http://192.168.31.19:8118 \
-#     --build-arg HTTPS_PROXY=http://192.168.31.19:8118 \
+#     --build-arg PROXY_IP=192.168.31.19 \
+#     --build-arg PROXY_PORT=8118 \
+#     --build-arg ANTHROPIC_AUTH_TOKEN=your_token \
 #     -f dockerfile/Dockerfile_pytorch_nvim_claude .
 # ==============================================================================
 
 FROM nvcr.io/nvidia/pytorch:25.12-py3
 
-# 代理设置（可选，构建时通过 --build-arg 传入，不传则忽略）
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-ARG NO_PROXY
-ENV http_proxy=$HTTP_PROXY \
-    https_proxy=$HTTPS_PROXY \
-    no_proxy=$NO_PROXY
-# apt 不读 env var，需单独配置
-RUN if [ -n "$HTTP_PROXY" ]; then \
-      echo "Acquire::http::Proxy \"$HTTP_PROXY\";" > /etc/apt/apt.conf.d/99proxy; \
-    fi && \
-    if [ -n "$HTTPS_PROXY" ]; then \
-      echo "Acquire::https::Proxy \"$HTTPS_PROXY\";" >> /etc/apt/apt.conf.d/99proxy; \
+# 代理和认证配置（可选，构建时通过 --build-arg 传入）
+ARG PROXY_IP
+ARG PROXY_PORT
+ARG ANTHROPIC_AUTH_TOKEN
+
+# 如果设置了代理，配置 apt（apt 不读 env var）
+RUN if [ -n "$PROXY_IP" ]; then \
+      echo "Acquire::http::Proxy \"http://${PROXY_IP}:${PROXY_PORT}\";" > /etc/apt/apt.conf.d/99proxy; \
+      echo "Acquire::https::Proxy \"http://${PROXY_IP}:${PROXY_PORT}\";" >> /etc/apt/apt.conf.d/99proxy; \
     fi
+
+# 设置全局代理 env（build 阶段供 curl/wget/git/npm 使用，runtime 也生效）
+ENV http_proxy=http://${PROXY_IP}:${PROXY_PORT} \
+    https_proxy=http://${PROXY_IP}:${PROXY_PORT}
 
 # 切换 apt 源到国内镜像（163）
 RUN sed -i s/archive.ubuntu.com/mirrors.163.com/g /etc/apt/sources.list && \
@@ -73,8 +74,17 @@ COPY .config/nvim /root/.config/nvim
 COPY .zsh_aliases /root/.zsh_aliases
 COPY .ctags.d /root/.ctags.d
 
-# 容器默认 shell 是 bash，把 zsh aliases source 进来
-RUN echo "source ~/.zsh_aliases" >> ~/.bashrc
+# 生成 .zsh_env（替换占位符为实际值）
+COPY .zsh_env /tmp/.zsh_env.tpl
+RUN sed -e "s#{{PROXY_IP}}#${PROXY_IP}#g" \
+        -e "s#{{PROXY_PORT}}#${PROXY_PORT}#g" \
+        -e "s#{{AUTH_TOKEN}}#${ANTHROPIC_AUTH_TOKEN}#g" \
+        /tmp/.zsh_env.tpl > /root/.zsh_env && \
+    rm /tmp/.zsh_env.tpl
+
+# 容器默认 shell 是 bash，source aliases 和 env
+RUN echo "source ~/.zsh_aliases" >> ~/.bashrc && \
+    echo "source ~/.zsh_env" >> ~/.bashrc
 
 # 安装 nvim 插件（headless 模式，lazy-lock.json 锁定版本）
 #   - :Lazy! sync 安装/更新所有 lazy.nvim 插件
