@@ -47,6 +47,3 @@ treesitter.setup({
     -- termcolors = { } -- table of colour name strings
   },
 })
-
--- aerial 没有 cuda 专属 query，用 cpp query 解析 .cu 文件（cuda 是 cpp 超集）
-vim.treesitter.language.register('cpp', 'cuda')
