@@ -107,7 +107,12 @@ pluginKeys.comment = {
     block = "gb",
   },
 }
--- Telescope 列表中 插入模式快捷键
+-- 当前文件 git 提交历史
+map("n", "<leader>gl", ":Telescope git_bcommits<CR>", opt)
+-- jumplist（<C-o>/<C-i> 的跳转历史）
+map("n", "<leader>j", ":Telescope jumplist<CR>", opt)
+
+-- Telescope 列表快捷键（insert/normal 模式均生效）
 pluginKeys.telescopeList = {
   i = {
     -- 上下移动5项，与 normal 模式 <C-j>/<C-k> 保持一致
@@ -123,11 +128,21 @@ pluginKeys.telescopeList = {
     ["<Down>"] = "cycle_history_next",
     ["<Up>"] = "cycle_history_prev",
     -- 关闭窗口
-    -- ["<esc>"] = actions.close,
     ["<C-c>"] = "close",
     -- 预览窗口上下滚动
     ["<C-u>"] = "preview_scrolling_up",
     ["<C-d>"] = "preview_scrolling_down",
+  },
+  n = {
+    -- normal 模式同样支持 <C-j>/<C-k> 移动5项
+    ["<C-j>"] = function(prompt_bufnr)
+      local actions = require("telescope.actions")
+      for _ = 1, 5 do actions.move_selection_next(prompt_bufnr) end
+    end,
+    ["<C-k>"] = function(prompt_bufnr)
+      local actions = require("telescope.actions")
+      for _ = 1, 5 do actions.move_selection_previous(prompt_bufnr) end
+    end,
   },
 }
 

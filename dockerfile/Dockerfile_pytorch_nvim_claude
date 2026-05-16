@@ -51,6 +51,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       fd-find \
       universal-ctags \
       xclip \
+      tmux \
     && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
@@ -71,6 +72,7 @@ RUN wget --no-check-certificate \
 
 # 从 smart_dotfiles 安装（COPY 仅依赖本地目录，无需 git clone）
 COPY .config/nvim /root/.config/nvim
+COPY .config/tmux /root/.config/tmux
 COPY .zsh_aliases /root/.zsh_aliases
 COPY .ctags.d /root/.ctags.d
 

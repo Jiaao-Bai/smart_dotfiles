@@ -26,6 +26,9 @@ mkdir -p ~/.config
 # --- nvim 配置 ---
 link_safe "$DOTFILES/.config/nvim" ~/.config/nvim
 
+# --- tmux 配置 ---
+link_safe "$DOTFILES/.config/tmux" ~/.config/tmux
+
 # --- zsh aliases → ~/.bashrc ---
 MARKER="# >>> smart_dotfiles aliases >>>"
 ALIASES_FILE="$DOTFILES/.zsh_aliases"
