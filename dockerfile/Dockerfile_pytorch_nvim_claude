@@ -88,11 +88,15 @@ RUN sed -e "s#{{PROXY_IP}}#${PROXY_IP}#g" \
 RUN echo "source ~/.zsh_aliases" >> ~/.bashrc && \
     echo "source ~/.zsh_env" >> ~/.bashrc
 
-# 安装 nvim 插件（headless 模式，lazy-lock.json 锁定版本）
-#   - :Lazy! sync 安装/更新所有 lazy.nvim 插件
+# 安装 nvim 插件（headless 模式，严格按 lazy-lock.json 锁定版本）
+#   - :Lazy! install 先 clone 所有缺失的插件
+#   - :Lazy! restore 把所有插件 checkout 到 lazy-lock.json 中锁定的 commit，
+#     避免 :Lazy sync 把插件更新到最新版（会引入对新版 nvim 的依赖，
+#     例如 aerial 要求 nvim 0.12+、nvim-treesitter main 分支重写了 API）
 #   - nvim-treesitter 的 build hook 会自动编译 treesitter parser
 #   - || true 是因为 nvim headless 可能因 UI 相关 warning 返回非零退出码
-RUN nvim --headless "+Lazy! sync" +qa || true
+RUN nvim --headless "+Lazy! install" +qa || true && \
+    nvim --headless "+Lazy! restore" +qa || true
 
 # 安装 Claude Code（使用 npmmirror 国内源）
 RUN npm install -g @anthropic-ai/claude-code --registry=https://registry.npmmirror.com
