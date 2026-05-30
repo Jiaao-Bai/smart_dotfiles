@@ -82,7 +82,9 @@ end, { noremap = true, silent = true, desc = "Telescope 符号搜索 (aerial)" }
 
 -- Telescope
 map("n", "<leader>p", ":Telescope find_files<CR>", opt)
-map("n", "<leader>f", ":Telescope live_grep<CR>", opt)
+vim.keymap.set("n", "<leader>f", function()
+  require("telescope").extensions.live_grep_args.live_grep_args()
+end, { noremap = true, silent = true, desc = "全文搜索 (ripgrep + args)" })
 
 -- gitsigns
 map("n", "]h", "<cmd>Gitsigns next_hunk<CR>", opt)

@@ -31,6 +31,8 @@ require("lazy").setup({
   "arkav/lualine-lsp-progress",
   -- telescope
   {"nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" }},
+  -- live-grep-args：允许在搜索框内直接传 rg 参数，如 foo -- -g '*.md' 或 foo -- src/
+  {"nvim-telescope/telescope-live-grep-args.nvim", dependencies = { "nvim-telescope/telescope.nvim" }},
   -- gitsigns
   {"lewis6991/gitsigns.nvim", dependencies = "nvim-lua/plenary.nvim"},
 
