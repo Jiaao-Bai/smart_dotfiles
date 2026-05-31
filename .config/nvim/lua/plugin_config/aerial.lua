@@ -10,11 +10,6 @@ aerial.setup({
   keymaps = {
     ["<C-j>"] = function() vim.cmd("normal! 5j") end,
     ["<C-k>"] = function() vim.cmd("normal! 5k") end,
-    -- <CR> 跳到代码对应行后立刻跳回 aerial，光标留在大纲
-    ["<CR>"] = function()
-      require("aerial").select()
-      vim.cmd("wincmd p")
-    end,
   },
   -- 只显示有意义的符号，过滤掉变量/字段/参数
   filter_kind = {
