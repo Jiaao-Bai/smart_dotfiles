@@ -98,6 +98,3 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 -- 默认不要折叠
 -- https://stackoverflow.com/questions/8316139/how-to-set-the-default-to-unfolded-when-you-open-a-file
 vim.opt.foldlevel = 99
-
--- 光标行高亮加强（vscode 主题默认太淡）
-vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2D3748" })
