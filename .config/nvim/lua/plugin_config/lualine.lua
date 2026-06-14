@@ -16,37 +16,23 @@ lualine.setup({
     },
     -- https://github.com/ryanoasis/powerline-extra-symbols
     section_separators = {
-      left = " ",
-      right = "",
+      left = " ",
+      right = "",
     },
     globalstatus = true,
   },
   extensions = { "nvim-tree" },
   sections = {
     lualine_c = {
-      "filename",
+      { "filename", path = 1 },
       {
         "lsp_progress",
-        spinner_symbols = { " ", " ", " ", " ", " ", " " },
+        spinner_symbols = { " ", " ", " ", " ", " ", " " },
       },
     },
-    lualine_x = {
-      "filesize",
-      {
-        "fileformat",
-        -- symbols = {
-        --   unix = '', -- e712
-        --   dos = '', -- e70f
-        --   mac = '', -- e711
-        -- },
-        symbols = {
-          unix = "LF",
-          dos = "CRLF",
-          mac = "CR",
-        },
-      },
-      "encoding",
-      "filetype",
+    lualine_x = {},
+    lualine_y = {
+      function() return vim.fn.line("$") .. " lines" end,
     },
   },
 })

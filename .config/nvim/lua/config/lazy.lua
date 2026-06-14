@@ -22,7 +22,12 @@ require("lazy").setup({
   -- nvim-tree
   {"nvim-tree/nvim-tree.lua", version = "*", lazy = false, dependencies = "nvim-tree/nvim-web-devicons",
     config = function()
-      require("nvim-tree").setup {}
+      require("nvim-tree").setup {
+        renderer = {
+          -- 已打开 buffer 对应的文件高亮整行（"name" 只高亮文件名，"all" 高亮整行）
+          highlight_opened_files = "name",
+        },
+      }
     end,},
   -- bufferline
   {'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons'},
@@ -31,6 +36,8 @@ require("lazy").setup({
   "arkav/lualine-lsp-progress",
   -- telescope
   {"nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" }},
+  -- live-grep-args：允许在搜索框内直接传 rg 参数，如 foo -- -g '*.md' 或 foo -- src/
+  {"nvim-telescope/telescope-live-grep-args.nvim", dependencies = { "nvim-telescope/telescope.nvim" }},
   -- gitsigns
   {"lewis6991/gitsigns.nvim", dependencies = "nvim-lua/plenary.nvim"},
 
