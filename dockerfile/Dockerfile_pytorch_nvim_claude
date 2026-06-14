@@ -2,16 +2,16 @@
 # smart_nvim + Claude Code 开发镜像
 # Base: NVIDIA PyTorch（含 CUDA、cuDNN、Python）
 #
-# 完全自包含构建，不依赖宿主机 nvim 状态，仅依赖 smart_dotfiles 目录。
+# 构建时 git clone smart_dotfiles（公开仓库），不依赖物理机本地文件 / 构建上下文。
 #
 # 更新工作流（无需重新构建镜像）：
-#   整个仓库（含 .git）被 COPY 到 /root/smart_dotfiles，配置以软链方式生效。
+#   仓库被 clone 到 /root/smart_dotfiles，配置以软链方式生效。
 #   dotfiles 更新时，进容器执行：
 #     cd ~/smart_dotfiles && git pull
 #   纯配置/快捷键改动即时生效；若 lazy-lock.json 有变（增删插件/改版本）：
 #     nvim --headless "+Lazy! restore" +qa
 #
-# 注意：构建上下文必须为仓库根目录（COPY . 依赖根目录的 .git）。
+# 可选：--build-arg DOTFILES_REPO=... DOTFILES_REF=<分支/tag> 覆盖来源。
 #
 # 构建（不带代理）：
 #   docker build --platform=linux/amd64 --network host \
@@ -79,12 +79,15 @@ RUN wget --no-check-certificate \
     && cp -r nvim-linux-x86_64/* /usr/local/ \
     && rm -rf nvim-linux-x86_64 nvim-linux-x86_64.tar.gz
 
-# 把整个 smart_dotfiles 仓库（含 .git）COPY 进镜像，再软链到 ~/.config。
-# 这样配置是「活链接」指向 repo：容器里 `cd ~/smart_dotfiles && git pull`
-# 即可让 nvim/tmux 配置立刻生效，无需重新构建镜像。
-# 注意：构建上下文须为仓库根目录，且根目录有 .git（自包含，无需构建时 clone）。
+# git clone smart_dotfiles 到镜像，再软链到 ~/.config。
+# 不依赖构建上下文/物理机本地文件，仅认远程仓库这一个真相源（公开仓库，无需鉴权）。
+# 配置是「活链接」指向 repo：容器里 `cd ~/smart_dotfiles && git pull` 即可让
+# nvim/tmux 配置立刻生效，无需重新构建镜像。
+# 可用 --build-arg 覆盖仓库地址 / 分支。
+ARG DOTFILES_REPO=https://github.com/Jiaao-Bai/smart_dotfiles.git
+ARG DOTFILES_REF=main
 ENV DOTFILES=/root/smart_dotfiles
-COPY . ${DOTFILES}
+RUN git clone --branch "${DOTFILES_REF}" "${DOTFILES_REPO}" ${DOTFILES}
 
 # 软链配置目录（指向 repo，git pull 后即时生效）
 RUN mkdir -p /root/.config && \
