@@ -29,6 +29,8 @@ nvim_tree.setup({
   },
   renderer = {
     group_empty = true,
+    -- 已打开 buffer 对应的文件名高亮
+    highlight_opened_files = "name",
   },
   filters = {
     -- 隐藏 .文件
@@ -50,8 +52,5 @@ nvim_tree.setup({
       -- 打开文件时关闭 tree
       quit_on_open = false,
     },
-  },
-  system_open = {
-    cmd = "open",
   },
 })

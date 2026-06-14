@@ -20,15 +20,7 @@ require("lazy").setup({
   -- vscode colorscheme
   "Mofiqul/vscode.nvim",
   -- nvim-tree
-  {"nvim-tree/nvim-tree.lua", version = "*", lazy = false, dependencies = "nvim-tree/nvim-web-devicons",
-    config = function()
-      require("nvim-tree").setup {
-        renderer = {
-          -- 已打开 buffer 对应的文件高亮整行（"name" 只高亮文件名，"all" 高亮整行）
-          highlight_opened_files = "name",
-        },
-      }
-    end,},
+  {"nvim-tree/nvim-tree.lua", version = "*", lazy = false, dependencies = "nvim-tree/nvim-web-devicons"},
   -- bufferline
   {'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons'},
   -- lualine
