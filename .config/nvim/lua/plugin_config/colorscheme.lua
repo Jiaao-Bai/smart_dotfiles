@@ -19,6 +19,8 @@ require('vscode').setup({
         -- this supports the same val table as vim.api.nvim_set_hl
         -- use colors from this colorscheme by requiring vscode.colors!
         Cursor = { fg=c.vscDarkBlue, bg=c.vscLightGreen, bold=true },
+        CursorLine = { bg="#2D3748" },
+        NvimTreeOpenedFile = { fg="#4FC1FF", bold=true },
     }
 })
 
