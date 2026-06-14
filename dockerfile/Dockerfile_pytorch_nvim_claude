@@ -2,7 +2,16 @@
 # smart_nvim + Claude Code 开发镜像
 # Base: NVIDIA PyTorch（含 CUDA、cuDNN、Python）
 #
-# 完全自包含构建，不依赖宿主机 nvim 状态，仅依赖 smart_dotfiles 目录。
+# 构建时 git clone smart_dotfiles（公开仓库），不依赖物理机本地文件 / 构建上下文。
+#
+# 更新工作流（无需重新构建镜像）：
+#   仓库被 clone 到 /root/smart_dotfiles，配置以软链方式生效。
+#   dotfiles 更新时，进容器执行：
+#     cd ~/smart_dotfiles && git pull
+#   纯配置/快捷键改动即时生效；若 lazy-lock.json 有变（增删插件/改版本）：
+#     nvim --headless "+Lazy! restore" +qa
+#
+# 可选：--build-arg DOTFILES_REPO=... DOTFILES_REF=<分支/tag> 覆盖来源。
 #
 # 构建（不带代理）：
 #   docker build --platform=linux/amd64 --network host \
@@ -70,19 +79,29 @@ RUN wget --no-check-certificate \
     && cp -r nvim-linux-x86_64/* /usr/local/ \
     && rm -rf nvim-linux-x86_64 nvim-linux-x86_64.tar.gz
 
-# 从 smart_dotfiles 安装（COPY 仅依赖本地目录，无需 git clone）
-COPY .config/nvim /root/.config/nvim
-COPY .config/tmux /root/.config/tmux
-COPY .zsh_aliases /root/.zsh_aliases
-COPY .ctags.d /root/.ctags.d
+# git clone smart_dotfiles 到镜像，再软链到 ~/.config。
+# 不依赖构建上下文/物理机本地文件，仅认远程仓库这一个真相源（公开仓库，无需鉴权）。
+# 配置是「活链接」指向 repo：容器里 `cd ~/smart_dotfiles && git pull` 即可让
+# nvim/tmux 配置立刻生效，无需重新构建镜像。
+# 可用 --build-arg 覆盖仓库地址 / 分支。
+ARG DOTFILES_REPO=https://github.com/Jiaao-Bai/smart_dotfiles.git
+ARG DOTFILES_REF=main
+ENV DOTFILES=/root/smart_dotfiles
+RUN git clone --branch "${DOTFILES_REF}" "${DOTFILES_REPO}" ${DOTFILES}
 
-# 生成 .zsh_env（替换占位符为实际值）
-COPY .zsh_env /tmp/.zsh_env.tpl
+# 软链配置目录（指向 repo，git pull 后即时生效）
+RUN mkdir -p /root/.config && \
+    ln -sfn ${DOTFILES}/.config/nvim /root/.config/nvim && \
+    ln -sfn ${DOTFILES}/.config/tmux /root/.config/tmux && \
+    ln -sfn ${DOTFILES}/.zsh_aliases /root/.zsh_aliases && \
+    ln -sfn ${DOTFILES}/.ctags.d /root/.ctags.d
+
+# 生成 .zsh_env（替换占位符为实际值）。注意：这是真实文件而非软链，
+# 因为含构建时注入的 token/proxy。如需更新，git pull 后重跑下面 sed 即可。
 RUN sed -e "s#{{PROXY_IP}}#${PROXY_IP}#g" \
         -e "s#{{PROXY_PORT}}#${PROXY_PORT}#g" \
         -e "s#{{AUTH_TOKEN}}#${ANTHROPIC_AUTH_TOKEN}#g" \
-        /tmp/.zsh_env.tpl > /root/.zsh_env && \
-    rm /tmp/.zsh_env.tpl
+        ${DOTFILES}/.zsh_env > /root/.zsh_env
 
 # 容器默认 shell 是 bash，source aliases 和 env
 RUN echo "source ~/.zsh_aliases" >> ~/.bashrc && \
